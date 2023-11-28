@@ -1,5 +1,6 @@
 package com.example.bookrent.domain.loanhistory.model;
 
+import com.example.bookrent.domain.book.model.Book;
 import com.example.bookrent.domain.user.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +22,10 @@ public class LoanHistory {
     @JoinColumn(name = "userId")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @JoinColumn(name = "bookId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Book book;
 
 
     private LocalDateTime loanDate;
