@@ -17,6 +17,8 @@ public class UserController {
     private final UserAppService userAppService;
 
 
+
+
     /**
      *
      * 1. 파라미터검증
@@ -41,6 +43,9 @@ public class UserController {
         userAppService.verifyEmail(token);
 
     }
+
+
+
 
 
 }

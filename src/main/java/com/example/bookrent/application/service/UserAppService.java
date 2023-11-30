@@ -7,7 +7,6 @@ import com.example.bookrent.util.RedisUtil;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,15 +16,20 @@ public class UserAppService {
 
     private final UserService userService;
     private final EmailService emailService;
-
     private final RedisUtil redisUtil;
 
     @Transactional
     public void registerUser(SignUpRequest signUpRequest) throws Exception {
+
         // 중복 이메일 확인
         if (userService.checkDuplicatedEmail(signUpRequest.getEmail())) {
-            throw new Exception("Email already registered.");
+            throw new Exception("이미 가입된 이메일입니다.");
         }
+
+        if (emailService.checkDuplicateRequest(signUpRequest.getEmail())) {
+            throw new Exception("이미 인증링크를 보냈습니다.");
+        }
+
 
         // 사용자 등록 (이메일 인증 상태는 미인증으로)
         userService.createUser(signUpRequest);

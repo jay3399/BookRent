@@ -1,8 +1,10 @@
 package com.example.bookrent.domain.email.service;
 
 
+import com.example.bookrent.util.RedisUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     private final JavaMailSender mailSender;
+
+    private final RedisUtil redisUtil;
 
 
     public void sendVerificationEmail(String userEmail, String token) throws MessagingException {
@@ -35,8 +39,33 @@ public class EmailService {
 
         mailSender.send(mimeMessage);
 
+        preventDuplicateRequestForEmail(userEmail);
 
 
     }
+
+    public boolean checkDuplicateRequest(String userMail) {
+
+
+        return redisUtil.getValue(getKey(userMail)) != null;
+        
+    }
+
+
+    /**
+     * 이메일 중복요청 방지 세팅 .
+     * @param userEmail
+     */
+    private void preventDuplicateRequestForEmail(String userEmail) {
+
+        redisUtil.setValueWithExp(getKey(userEmail), "requested", 15, TimeUnit.MINUTES);
+
+
+    }
+
+    private static String getKey(String userEmail) {
+        return "verificationLink:" + userEmail;
+    }
+
 
 }

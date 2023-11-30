@@ -2,7 +2,8 @@ package com.example.bookrent.domain.user.model;
 
 
 import com.example.bookrent.application.ui.request.SignUpRequest;
-import com.example.bookrent.domain.loanhistory.model.LoanHistory;
+import com.example.bookrent.domain.book.model.Book;
+import com.example.bookrent.domain.loanhistory.model.LoanRecord;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,9 +37,26 @@ public class User {
     private boolean emailVerified = false;
     private LocalDateTime emailVerificationDate;
 
-    @OneToMany(mappedBy = "user" , cascade =  CascadeType.ALL)
-    private List<LoanHistory> loanHistories = new ArrayList<>();
+    private Long loanLimit = 10L;
 
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<LoanRecord> loanRecords = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Book> books = new ArrayList<>();
+
+    public void addLoanedBook(Book book) {
+        books.add(book);
+    }
+
+    public void removeLoanedBook(Book book) {
+        books.remove(book);
+
+    }
+    public void addLoanRecord(LoanRecord loanRecord) {
+        loanRecords.add(loanRecord);
+    }
 
     private User(SignUpRequest sign) {
 
@@ -67,6 +85,10 @@ public class User {
         }
 
         return false;
+    }
+
+    public boolean isLoanLimit() {
+        return books.size() >= loanLimit;
     }
 
     public void getVerificationForEmail() {

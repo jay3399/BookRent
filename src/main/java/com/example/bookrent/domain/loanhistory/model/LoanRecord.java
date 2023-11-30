@@ -11,9 +11,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
-public class LoanHistory {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class LoanRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,21 +30,28 @@ public class LoanHistory {
     @ManyToOne(fetch = FetchType.LAZY)
     private Book book;
 
-
     private LocalDateTime loanDate;
 
     @Column(nullable = true)
     private LocalDateTime returnDate;
 
 
+    private LoanRecord(User user, Book book) {
+        this.user = user;
+        user.addLoanRecord(this);
+        this.book = book;
+        book.addLoanRecord(this);
+        this.loanDate = LocalDateTime.now();
+    }
+
+    public void returnBook() {
+        this.returnDate = LocalDateTime.now();
+    }
 
 
-
-
-
-
-
-
+    public static LoanRecord create(User user, Book book) {
+        return new LoanRecord(user, book);
+    }
 
 
 
