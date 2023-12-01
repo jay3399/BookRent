@@ -20,7 +20,7 @@ public class BookAppService {
 
     @Transactional
     public void saveBook(CreateBookRequest request) {
-        bookService.saveBook(Book.create(request));
+        bookService.saveBook(Book.create(request.getTitle() , request.getAuthor()));
     }
 
     @Transactional

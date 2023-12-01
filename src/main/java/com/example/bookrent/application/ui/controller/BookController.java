@@ -21,7 +21,7 @@ public class BookController {
 
 
     @PostMapping
-    public ResponseEntity<?> createBook(@Valid@RequestBody CreateBookRequest request) {
+    public ResponseEntity<?> createBook(@Valid @RequestBody CreateBookRequest request) {
 
         bookAppService.saveBook(request);
 
@@ -38,7 +38,6 @@ public class BookController {
         return ResponseEntity.ok(loanRecordsByBook);
 
     }
-
 
 
 }

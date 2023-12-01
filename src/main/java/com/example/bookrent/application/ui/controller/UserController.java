@@ -17,15 +17,8 @@ public class UserController {
     private final UserAppService userAppService;
 
 
-
-
     /**
-     *
-     * 1. 파라미터검증
-     * 2. 중복 이메일 방지
-     * 3. 인증링크 중복요청 방지
-     * 4. 인증링크 클릭시 , 해당 링크 토큰 만료시키기 + 토큰 만료시간 정하기.
-     *
+     * 1. 파라미터검증 2. 중복 이메일 방지 3. 인증링크 중복요청 방지 4. 인증링크 클릭시 , 해당 링크 토큰 만료시키기 + 토큰 만료시간 정하기.
      */
 
 
@@ -43,9 +36,6 @@ public class UserController {
         userAppService.verifyEmail(token);
 
     }
-
-
-
 
 
 }

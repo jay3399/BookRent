@@ -40,7 +40,6 @@ public class User {
 
     private Long loanLimit = 10L;
 
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<LoanRecord> loanRecords = new ArrayList<>();
 

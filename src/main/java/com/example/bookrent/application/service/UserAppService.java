@@ -22,23 +22,19 @@ public class UserAppService {
     public void registerUser(SignUpRequest signUpRequest) throws Exception {
 
         // 중복 이메일 확인
-        if (userService.checkDuplicatedEmail(signUpRequest.getEmail())) {
-            throw new Exception("이미 가입된 이메일입니다.");
-        }
+        checkEmailDuplication(signUpRequest);
 
-        if (emailService.checkDuplicateRequest(signUpRequest.getEmail())) {
-            throw new Exception("이미 인증링크를 보냈습니다.");
-        }
-
+        checkVerificationCodeDuplication(signUpRequest);
 
         // 사용자 등록 (이메일 인증 상태는 미인증으로)
         userService.createUser(signUpRequest);
 
         String token = generateToken();
-        redisUtil.setValueWithExp(token, signUpRequest.getEmail() , 30 , TimeUnit.MINUTES);
+
+        redisUtil.setValueWithExp(token, signUpRequest.getEmail(), 30, TimeUnit.MINUTES);
 
         // 인증 이메일 발송
-        emailService.sendVerificationEmail(signUpRequest.getEmail() ,  token);
+        emailService.sendVerificationEmail(signUpRequest.getEmail(), token);
     }
 
 
@@ -61,7 +57,17 @@ public class UserAppService {
         return UUID.randomUUID().toString();
     }
 
+    private void checkVerificationCodeDuplication(SignUpRequest signUpRequest) throws Exception {
+        if (emailService.checkDuplicateRequest(signUpRequest.getEmail())) {
+            throw new Exception("이미 인증링크를 보냈습니다.");
+        }
+    }
 
+    private void checkEmailDuplication(SignUpRequest signUpRequest) throws Exception {
+        if (userService.checkDuplicatedEmail(signUpRequest.getEmail())) {
+            throw new Exception("이미 가입된 이메일입니다.");
+        }
+    }
 
 
 }

@@ -28,10 +28,9 @@ import org.springframework.util.StringUtils;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bookId")
     private Long id;
-
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
@@ -44,12 +43,12 @@ public class Book {
     private LoanStatus loanStatus = LoanStatus.AVAILABLE;
 
 
-    private Book(CreateBookRequest request) {
-        this.title = request.getTitle();
-        this.author = request.getAuthor();
+    private Book(String title, String author) {
+        this.title = title;
+        this.author = author;
     }
 
-    @OneToMany(mappedBy = "book" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<LoanRecord> loanRecordList = new ArrayList<>();
 
     public void addLoanRecord(LoanRecord loanRecord) {
@@ -91,12 +90,9 @@ public class Book {
     }
 
 
+    public static Book create(String title, String author) {
 
-
-
-    public static Book create(CreateBookRequest request) {
-
-        return new Book(request);
+        return new Book(title, author);
 
     }
 }
