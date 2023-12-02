@@ -4,6 +4,7 @@ import com.example.bookrent.application.service.UserAppService;
 import com.example.bookrent.application.ui.request.SignUpRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,11 +23,12 @@ public class UserController {
      */
 
 
-    @PostMapping()
-    public void signUp(@Valid @RequestBody SignUpRequest signUpRequest) throws Exception {
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest signUpRequest) throws Exception {
 
         userAppService.registerUser(signUpRequest);
 
+        return ResponseEntity.ok("OK");
 
     }
 

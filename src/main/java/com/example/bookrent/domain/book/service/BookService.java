@@ -3,6 +3,7 @@ package com.example.bookrent.domain.book.service;
 import com.example.bookrent.application.ui.request.EditBookRequest;
 import com.example.bookrent.domain.book.model.Book;
 import com.example.bookrent.domain.book.repository.BookRepository;
+//import com.example.bookrent.domain.loanhistory.model.LoanRecord;
 import com.example.bookrent.domain.loanhistory.model.LoanRecord;
 import com.example.bookrent.domain.loanhistory.repository.LoanRepository;
 import jakarta.persistence.EntityNotFoundException;

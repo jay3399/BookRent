@@ -22,11 +22,11 @@ public class LoanRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @JoinColumn(name = "bookId")
+    @JoinColumn(name = "book_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Book book;
 

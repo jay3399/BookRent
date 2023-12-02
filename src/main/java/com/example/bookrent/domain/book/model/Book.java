@@ -29,7 +29,7 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bookId")
+    @Column(name = "book_id")
     private Long id;
     @Column(nullable = false)
     private String title;
@@ -55,7 +55,7 @@ public class Book {
         loanRecordList.add(loanRecord);
     }
 
-    @JoinColumn(name = "userId")
+    @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 

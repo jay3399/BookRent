@@ -3,6 +3,7 @@ package com.example.bookrent.domain.user.model;
 
 import com.example.bookrent.application.ui.request.SignUpRequest;
 import com.example.bookrent.domain.book.model.Book;
+//import com.example.bookrent.domain.loanhistory.model.LoanRecord;
 import com.example.bookrent.domain.loanhistory.model.LoanRecord;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -26,7 +27,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId")
+    @Column(name = "user_id")
     private Long id;
     @Column(unique = true, nullable = false)
     private String email;

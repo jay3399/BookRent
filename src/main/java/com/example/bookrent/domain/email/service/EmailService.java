@@ -26,9 +26,10 @@ public class EmailService {
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
 
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
 
         helper.setTo(userEmail);
+        helper.setFrom("josw90@naver.com");
         helper.setSubject("이메일인증을 완료해주세요");
 
 
@@ -48,7 +49,7 @@ public class EmailService {
 
 
         return redisUtil.getValue(getKey(userMail)) != null;
-        
+
     }
 
 
