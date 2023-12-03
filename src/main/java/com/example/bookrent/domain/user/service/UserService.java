@@ -15,11 +15,6 @@ public class UserService {
     public final UserRepository userRepository;
 
 
-    public boolean checkDuplicatedEmail(String email) {
-
-        return userRepository.findByEmail(email).isPresent();
-
-    }
 
 
     public void createUser(SignUpRequest signUpRequest) {
@@ -31,12 +26,17 @@ public class UserService {
 
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
 
     public void updateUserStatus(String email) {
 
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException("해당 유저를 찾을수 없습니다" + email)
         );
+
         user.getVerificationForSignUp();
 
     }

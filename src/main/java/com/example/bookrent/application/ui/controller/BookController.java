@@ -2,7 +2,6 @@ package com.example.bookrent.application.ui.controller;
 
 import com.example.bookrent.application.service.BookAppService;
 import com.example.bookrent.application.ui.request.CreateBookRequest;
-//import com.example.bookrent.domain.loanhistory.model.LoanRecord;
 import com.example.bookrent.domain.loanhistory.model.LoanRecord;
 import jakarta.validation.Valid;
 import java.util.List;

@@ -3,7 +3,6 @@ package com.example.bookrent.domain.user.model;
 
 import com.example.bookrent.application.ui.request.SignUpRequest;
 import com.example.bookrent.domain.book.model.Book;
-//import com.example.bookrent.domain.loanhistory.model.LoanRecord;
 import com.example.bookrent.domain.loanhistory.model.LoanRecord;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -34,8 +33,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
     @Enumerated(EnumType.STRING)
-    private AccountStatus accountStatus = AccountStatus.ACTIVE;
-    private boolean emailVerifiedForSignUp = false;
+    private AccountStatus accountStatus = AccountStatus.INACTIVE;
     private boolean emailVerified = false;
     private LocalDateTime emailVerificationDate;
 
@@ -69,6 +67,9 @@ public class User {
         return !emailVerified || isLongTime();
     }
 
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
+    }
 
     private static final long VERIFICATION_EXPIRATION_HOURS = 24;
 
@@ -76,6 +77,7 @@ public class User {
     public boolean isLongTime() {
 
         if (emailVerificationDate != null) {
+
             LocalDateTime now = LocalDateTime.now();
 
             Duration duration = Duration.between(emailVerificationDate, now);
@@ -96,12 +98,9 @@ public class User {
         this.emailVerified = true;
     }
 
-    public void getEmailVerification() {
-        this.emailVerifiedForSignUp = true;
-    }
 
     public void getVerificationForSignUp() {
-        this.emailVerifiedForSignUp = true;
+        this.accountStatus = AccountStatus.ACTIVE;
     }
 
 
