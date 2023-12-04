@@ -36,6 +36,7 @@ public class User {
     private AccountStatus accountStatus = AccountStatus.INACTIVE;
     private boolean emailVerified = false;
     private LocalDateTime emailVerificationDate;
+    private LocalDateTime createAt = LocalDateTime.now();
 
     private Long loanLimit = 10L;
 
@@ -104,6 +105,9 @@ public class User {
     }
 
 
+    public boolean isInactiveUser() {
+        return accountStatus == AccountStatus.INACTIVE;
+    }
 
 
     public static User create(SignUpRequest request) {

@@ -7,9 +7,12 @@ import com.example.bookrent.domain.user.model.User;
 import com.example.bookrent.domain.user.service.UserService;
 import com.example.bookrent.util.RedisUtil;
 import jakarta.mail.MessagingException;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +38,49 @@ public class UserAppService {
 
     }
 
+
+    @Transactional
+    public void verifyEmail(String token) throws Exception {
+
+        String email = redisUtil.getValue(token);
+
+        if (email == null) {
+            throw new Exception("token is not existed");
+        }
+
+        userService.updateUserStatus(email);
+
+
+    }
+
+    @Scheduled(cron = "0 0 1 * * ?")
+    @Transactional
+    public void removeInactiveUsers() {
+
+        LocalDateTime date = LocalDateTime.now().minusDays(1);
+
+        List<User> users = userService.findUsersWithExpiredVerification(date);
+
+        for (User user : users) {
+            if (user.isInactiveUser()) {
+                userService.deleteUser(user);
+            }
+        }
+
+    }
+
+
+    private String generateToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    private void checkVerificationCodeDuplication(SignUpRequest signUpRequest) throws Exception {
+        if (emailService.checkDuplicateRequest(signUpRequest.getEmail())) {
+            throw new Exception("이미 인증링크를 보냈습니다.");
+        }
+    }
+
+
     private void registerNewUser(SignUpRequest signUpRequest) throws Exception {
         checkVerificationCodeDuplication(signUpRequest);
         userService.createUser(signUpRequest);
@@ -59,30 +105,6 @@ public class UserAppService {
     }
 
 
-    @Transactional
-    public void verifyEmail(String token) throws Exception {
-
-        String email = redisUtil.getValue(token);
-
-        if (email == null) {
-            throw new Exception("token is not existed");
-        }
-
-        userService.updateUserStatus(email);
-
-
-    }
-
-
-    private String generateToken() {
-        return UUID.randomUUID().toString();
-    }
-
-    private void checkVerificationCodeDuplication(SignUpRequest signUpRequest) throws Exception {
-        if (emailService.checkDuplicateRequest(signUpRequest.getEmail())) {
-            throw new Exception("이미 인증링크를 보냈습니다.");
-        }
-    }
 
 
 }
