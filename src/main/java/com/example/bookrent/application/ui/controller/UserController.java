@@ -32,12 +32,49 @@ public class UserController {
 
     }
 
-    @GetMapping("/verify")
-    public void verifyEmail(@RequestParam String token) throws Exception {
+    @PostMapping("/signIn")
+    public ResponseEntity<?> signIn(@RequestParam String email) throws Exception {
+
+        // 추후 예외 추가
+        userAppService.sendSignInLink(email);
+
+
+
+
+    }
+
+
+
+
+    @GetMapping("/verificationForSignUp")
+    public void verifyEmailForSignUp(@RequestParam String token) throws Exception {
 
         userAppService.verifyEmail(token);
 
     }
+
+    @GetMapping("/verificationForSignIn")
+    public void verifyEmailForSignIn(@RequestParam String token) throws Exception {
+
+        String email = userAppService.verifyEmailForSignIn(token);
+
+
+        // 이메일 기반 토큰 생성후 반환
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
 
 
 }

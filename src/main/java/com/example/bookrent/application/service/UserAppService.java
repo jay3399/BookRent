@@ -42,16 +42,30 @@ public class UserAppService {
     @Transactional
     public void verifyEmail(String token) throws Exception {
 
-        String email = redisUtil.getValue(token);
-
-        if (email == null) {
-            throw new Exception("token is not existed");
-        }
+        String email = validateEmail(token);
 
         userService.updateUserStatus(email);
 
 
     }
+
+    public String verifyEmailForSignIn(String token) throws Exception {
+
+        return validateEmail(token);
+
+
+
+    }
+
+    private String validateEmail(String token) throws Exception {
+        String email = redisUtil.getValue(token);
+
+        if (email == null) {
+            throw new Exception("token is not existed");
+        }
+        return email;
+    }
+
 
     @Scheduled(cron = "0 0 1 * * ?")
     @Transactional
@@ -66,6 +80,19 @@ public class UserAppService {
                 userService.deleteUser(user);
             }
         }
+
+    }
+
+    public void sendSignInLink(String email) throws Exception {
+
+        User user = userService.getUserByEmail(email);
+
+        if (user == null || user.getAccountStatus() != AccountStatus.ACTIVE) {
+            throw new Exception("유저를 찾을수 없습니다");
+        }
+
+        sendEmailVerificationForSignIn(email);
+
 
     }
 
@@ -84,27 +111,44 @@ public class UserAppService {
     private void registerNewUser(SignUpRequest signUpRequest) throws Exception {
         checkVerificationCodeDuplication(signUpRequest);
         userService.createUser(signUpRequest);
-        sendEmailVerification(signUpRequest);
+        sendEmailVerificationForSignUp(signUpRequest.getEmail());
     }
 
     private void checkExistingUser(SignUpRequest signUpRequest, User user) throws Exception {
         if (user.getAccountStatus() == AccountStatus.INACTIVE) {
-            sendEmailVerification(signUpRequest);
+            sendEmailVerificationForSignUp(signUpRequest.getEmail());
             throw new Exception("이메일 재인증 링크를 보냈습니다 , 확인해주세요");
         }
         throw new Exception("이미 가입된 이메일 입니다");
     }
 
-    private void sendEmailVerification(SignUpRequest signUpRequest) throws MessagingException {
-        String token = generateToken();
 
-        redisUtil.setValueWithExp(token, signUpRequest.getEmail(), 30, TimeUnit.MINUTES);
+    private void sendEmailVerificationForSignUp(String email) throws MessagingException {
 
-        // 인증 이메일 발송
-        emailService.sendVerificationEmail(signUpRequest.getEmail(), token);
+        String value = "verificationForSignUp";
+
+        sendVerificationLink(email, value);
+    }
+
+    private void sendEmailVerificationForSignIn(String email) throws MessagingException {
+
+        String value = "verificationForSignIn";
+
+        sendVerificationLink(email, value);
+
+
     }
 
 
+    private void sendVerificationLink(String email, String value) throws MessagingException {
+
+        String token = generateToken();
+
+        redisUtil.setValueWithExp(token, email, 30, TimeUnit.MINUTES);
+
+        emailService.sendVerificationEmail(email, token, value);
+
+    }
 
 
 }

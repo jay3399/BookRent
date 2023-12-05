@@ -17,8 +17,6 @@ public class UserService {
     public final UserRepository userRepository;
 
 
-
-
     public void createUser(SignUpRequest signUpRequest) {
 
         User user = User.create(signUpRequest);
