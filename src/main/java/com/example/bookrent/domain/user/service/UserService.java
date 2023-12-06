@@ -31,13 +31,14 @@ public class UserService {
     }
 
 
-    public void updateUserStatus(String email) {
+    public void updateUserStatus(String email , String ipAddress) {
 
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException("해당 유저를 찾을수 없습니다" + email)
         );
 
-        user.getVerificationForSignUp();
+        user.getVerificationForEmail(ipAddress);
+
 
     }
 

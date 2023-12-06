@@ -40,20 +40,23 @@ public class UserAppService {
 
 
     @Transactional
-    public void verifyEmail(String token) throws Exception {
+    public void verifyEmailForSignUp(String token , String ipAddress) throws Exception {
 
         String email = validateEmail(token);
 
-        userService.updateUserStatus(email);
+        userService.updateUserStatus(email, ipAddress);
 
 
     }
 
-    public String verifyEmailForSignIn(String token) throws Exception {
+    @Transactional
+    public String verifyEmailForSignIn(String token , String ipAddress) throws Exception {
 
-        return validateEmail(token);
+        String email = validateEmail(token);
 
+        userService.updateUserStatus(email, ipAddress);
 
+        return email;
 
     }
 

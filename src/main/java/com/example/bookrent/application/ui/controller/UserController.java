@@ -2,6 +2,8 @@ package com.example.bookrent.application.ui.controller;
 
 import com.example.bookrent.application.service.UserAppService;
 import com.example.bookrent.application.ui.request.SignUpRequest;
+import com.example.bookrent.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserAppService userAppService;
+
+    private final JwtUtil jwtUtil;
 
 
     /**
@@ -32,39 +36,48 @@ public class UserController {
 
     }
 
+
+    /**
+     * 로그인을 할떄마다 ,이메일 인증을 받아야하는것은 귀찮은일.
+     *
+     * 이메일 인증을 받은지 , 특정기간이 지나거나 아이피가 변경된 회원만 재인증메일을 보낸뒤 로그인을 완료시키고 그외는 재로그인시 이메일만 입력해도 로그인이 가능하게한다 .
+     *
+     */
+
     @PostMapping("/signIn")
     public ResponseEntity<?> signIn(@RequestParam String email) throws Exception {
+
+
 
         // 추후 예외 추가
         userAppService.sendSignInLink(email);
 
-
+        return ResponseEntity.ok("OK");
 
 
     }
 
 
-
-
     @GetMapping("/verificationForSignUp")
-    public void verifyEmailForSignUp(@RequestParam String token) throws Exception {
+    public void verifyEmailForSignUp(@RequestParam String token, HttpServletRequest request) throws Exception {
 
-        userAppService.verifyEmail(token);
+        String ipAddress = request.getRemoteAddr();
+
+        userAppService.verifyEmailForSignUp(token, ipAddress);
 
     }
 
     @GetMapping("/verificationForSignIn")
-    public void verifyEmailForSignIn(@RequestParam String token) throws Exception {
+    public ResponseEntity<?> verifyEmailForSignIn(@RequestParam String tokenForVerification, HttpServletRequest request) throws Exception {
 
-        String email = userAppService.verifyEmailForSignIn(token);
+        String ipAddress = request.getRemoteAddr();
 
+        String email = userAppService.verifyEmailForSignIn(tokenForVerification, ipAddress);
 
         // 이메일 기반 토큰 생성후 반환
+        String token = jwtUtil.generateToken(email);
 
-
-
-
-
+        return ResponseEntity.ok(token);
 
 
     }

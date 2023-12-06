@@ -40,6 +40,7 @@ public class User {
 
     private Long loanLimit = 10L;
 
+    private String ipAddress;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<LoanRecord> loanRecords = new ArrayList<>();
 
@@ -100,8 +101,9 @@ public class User {
     }
 
 
-    public void getVerificationForSignUp() {
+    public void getVerificationForEmail(String ipAddress) {
         this.accountStatus = AccountStatus.ACTIVE;
+        this.ipAddress = ipAddress;
     }
 
 
